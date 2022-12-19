@@ -1,0 +1,15 @@
+: 無限ループで常駐する(YES or NO)
+: Resident in an infinite loop (YES or NO).
+LOOP=NO
+
+: 終了キー
+: Key to exit
+EXIT_KEY=q
+
+: ウィンドウサイズ(横,縦)
+: Window Size(width, height)
+WINDOW_SIZE=45,25
+
+: 表の罫線の長さ
+: Length of table rules
+RULED_LINE_LEN=40

@@ -1,0 +1,10 @@
+shortcut key,command(,explanation)
+c,cmd,command prompt
+calc,calc,calculator
+ch,"C:\Program Files\Google\Chrome\Application\chrome.exe" https://github.co.jp/,Chrome
+cp,control,Control Panel
+d,shell:Desktop,Desktop Folder
+e,explorer "C:\Program Files"
+r,regedit,Registry Editor
+s,services.msc,Services
+w,wsl

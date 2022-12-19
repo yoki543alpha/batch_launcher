@@ -1,0 +1,10 @@
+ショートカットキー,コマンド(,説明)
+c,cmd,コマンドプロンプト
+calc,calc,電卓
+ch,"C:\Program Files\Google\Chrome\Application\chrome.exe" https://github.co.jp/,Chrome
+cp,control,コントロールパネル
+d,shell:Desktop,デスクトップ
+e,explorer "C:\Program Files"
+r,regedit,レジストリエディタ
+s,services.msc,サービス
+w,wsl
