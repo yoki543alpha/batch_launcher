@@ -1,17 +1,17 @@
 @echo off
 
-title launcher
+title batch-launcher
 setlocal enabledelayedexpansion
 set csv_file=%~dp0\key_list.csv
 
 for /f "tokens=1,2 delims=: " %%a in ('powershell -command "Get-WinUserLanguageList"') do set %%a=%%b
 
 if "%EnglishName%" == "Japanese" (
-    set "table_header=No.  キー      説明"
+    set "table_header=No.  キー      名前"
     set "exit_message=ランチャーを終了"
     set "key_input_message=キーを入力"
 ) else (
-    set "table_header=No.  Key       explanation"
+    set "table_header=No.  Key       name"
     set "exit_message=exit launcher"
     set "key_input_message=input key"
 )
@@ -21,12 +21,12 @@ for /f "usebackq tokens=1,2 delims==" %%a in ("%~dp0\config.txt") do set %%a=%%b
 if not "%WINDOW_SIZE%" == "" mode %WINDOW_SIZE%
 
 if "%RULED_LINE_LEN%" == "" (
-    set ruled_line=-----------------------------------
+    set ruled_line=────────────────────────────────────────
 ) else (
-    set ruled_line=-
+    set ruled_line=─
     for /l %%i in (1,1,%RULED_LINE_LEN%) do (
         set tmp_line=!ruled_line!
-        set ruled_line=-!tmp_line!
+        set ruled_line=─!tmp_line!
     )
 )
 

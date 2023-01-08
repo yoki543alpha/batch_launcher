@@ -1,4 +1,4 @@
-shortcut key,command(,explanation)
+shortcut key,command(,name)
 c,cmd,command prompt
 calc,calc,calculator
 ch,"C:\Program Files\Google\Chrome\Application\chrome.exe" https://github.co.jp/,Chrome
