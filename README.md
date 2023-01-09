@@ -47,7 +47,7 @@ config.txtを変更することで以下の設定が可能です。
 * ”Windowsキー＋R”を入力して「ファイル名を指定して実行」から`launcher.bat`を起動する。
   * launcher.batの名前をl.batに変更しておけば、`l`と入力するだけで起動可能。
 * [AutoHotKey](https://www.autohotkey.com/)から`launcher.bat`を起動する。
-  * リポジトリにAutoHotKeyのver1用とver2用の設定ファイルサンプルを用意しているので参考にして欲しい。
+  * リポジトリにAutoHotKeyのver1用とver2用の設定ファイルサンプルを用意しているので参考にして欲しい（Pauseキーを押すとアクティブまたは起動）。
   * この場合は常駐の設定をYESにしておくと良い。
 
 ## 表示位置の設定

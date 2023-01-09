@@ -47,7 +47,7 @@ You may run `launcher.bat` from a command prompt or other means, but one of the 
 * Type "Windows key + R" to launch the batch file from "Run".
   * If you rename launcher.bat to l.bat, you can start it by just typing `l`.
 * Launch `launcher.bat` from [AutoHotKey](https://www.autohotkey.com/).
-  * Please refer to the sample configuration files for ver1 and ver2 of AutoHotKey in the repository.
+  * Please refer to the sample configuration files for ver1 and ver2 of AutoHotKey in the repository ( Press Pause key to active or run ).
   * In this case, the resident setting should be YES.
 
 ## Display position setting
