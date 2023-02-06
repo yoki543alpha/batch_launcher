@@ -1,10 +1,11 @@
-ショートカットキー,コマンド(,名前)
+ショートカットキー,コマンド(,名前,色)
 c,cmd,コマンドプロンプト
-calc,calc,電卓
+calc,calc,電卓,red
 ch,"C:\Program Files\Google\Chrome\Application\chrome.exe" https://github.co.jp/,Chrome
 cp,control,コントロールパネル
-d,shell:Desktop,デスクトップ
-e,explorer "C:\Program Files"
+d,shell:Desktop,デスクトップ,緑明
+e,"C:\Program Files"
 r,regedit,レジストリエディタ
-s,services.msc,サービス
-w,wsl
+s,services.msc,サービス,aqua
+key,notepad.exe key_list.csv,キー設定
+conf,notepad.exe config.txt,ランチャー設定

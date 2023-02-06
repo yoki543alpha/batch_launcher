@@ -1,10 +1,11 @@
-shortcut key,command(,name)
+shortcut key,command(,name,color)
 c,cmd,command prompt
-calc,calc,calculator
-ch,"C:\Program Files\Google\Chrome\Application\chrome.exe" https://github.co.jp/,Chrome
+calc,calc,calculator,red
+ch,"C:\Program Files\Google\Chrome\Application\chrome.exe" https://github.com/,Chrome
 cp,control,Control Panel
-d,shell:Desktop,Desktop Folder
-e,explorer "C:\Program Files"
+d,shell:Desktop,Desktop Folder,green_b
+e,"C:\Program Files"
 r,regedit,Registry Editor
-s,services.msc,Services
-w,wsl
+s,services.msc,Services,aqua
+key,notepad.exe key_list.csv,Key config
+conf,notepad.exe config.txt,Launcher config

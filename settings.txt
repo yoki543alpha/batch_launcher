@@ -1,0 +1,31 @@
+: 無限ループで常駐する(YES or NO)
+: Resident in an infinite loop (YES or NO).
+LOOP=YES
+
+: 終了キー
+: Exit Shortcut Key
+EXIT_KEY=q
+
+: 背景色
+: Background Color
+BACKGROUND_COLOR=black
+
+: 文字色
+: Text Color
+TEXT_COLOR=white
+
+: 列数
+: number of columns
+COLUMN_NUM=2
+
+: 番号の表示(YES or NO)
+: Display the number (YES or NO)
+DISPLAY_NUMBER=YES
+
+: 幅を均等にする(YES or NO)
+: Equalize cell widths (YES or NO)
+EQUALIZE_CELL_WIDTH=NO
+
+: 縦に並べる(YES or NO), NOは複数列で横並び
+: Arrange vertically (YES or NO). When 'NO' is selected, horizontally.
+ARRANGE_VERTICAL=YES
