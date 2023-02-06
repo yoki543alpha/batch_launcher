@@ -68,24 +68,25 @@ settings.txtでランチャーの設定変更ができます。
 ## 色設定
 batch-launcherは以下の16個の色を使用できます。
 
-<table>
-<tr><th>No.</th><th width=50>色</th><th>色名</th><th>設定値</th></tr>
-<tr><td>1</td><td bgcolor=#cccccc></td><td>白</td><td>white, 白</td></tr>
-<tr><td>2</td><td bgcolor=#0c0c0c></td><td>黒</td><td>black, 黒</td></tr>
-<tr><td>3</td><td bgcolor=#c50f1f></td><td>赤</td><td>red, 赤</td></tr>
-<tr><td>4</td><td bgcolor=#c19c00></td><td>黄色</td><td>yellow, 黄</td></tr>
-<tr><td>5</td><td bgcolor=#13a10e></td><td>緑</td><td>green, 緑</td></tr>
-<tr><td>6</td><td bgcolor=#0037da></td><td>青</td><td>blue, 青</td></tr>
-<tr><td>7</td><td bgcolor=#3a96dd></td><td>水色</td><td>aqua, 水</td></tr>
-<tr><td>8</td><td bgcolor=#881798></td><td>紫</td><td>purple, 紫</td></tr>
-<tr><td>9</td><td bgcolor=#f2f2f2></td><td>輝く白</td><td>white_b, 白明</td></tr>
-<tr><td>10</td><td bgcolor=#767676></td><td>灰色</td><td>gray, black_b, 灰, 黒明</td></tr>
-<tr><td>11</td><td bgcolor=#e74856></td><td>明るい赤</td><td>red_b, 赤明</td></tr>
-<tr><td>12</td><td bgcolor=#f9f1a5></td><td>明るい黄色</td><td>yellow_b, 黄明</td></tr>
-<tr><td>13</td><td bgcolor=#16c60c></td><td>明るい緑</td><td>green_b, 緑明</td></tr>
-<tr><td>14</td><td bgcolor=#3b78ff></td><td>明るい青</td><td>blue_b, 青明</td></tr>
-<tr><td>15</td><td bgcolor=#61d6d6></td><td>明るい水色</td><td>aqua_b, 水明</td></tr>
-<tr><td>16</td><td bgcolor=#b4009e></td><td>明るい紫</td><td>purple_b, 紫明</td></tr></table>
+|No.|色|色名|設定値|
+|-:|-|-|-|
+|1|![](png/white.png)|白|white, 白|
+|2|![](png/black.png)|黒|black, 黒|
+|3|![](png/red.png)|赤|red, 赤|
+|4|![](png/yellow.png)|黄色|yellow, 黄|
+|5|![](png/green.png)|緑|green, 緑|
+|6|![](png/blue.png)|青|blue, 青|
+|7|![](png/aqua.png)|水色|aqua, 水|
+|8|![](png/purple.png)|紫|purple, 紫|
+|9|![](png/white_b.png)|輝く白|white_b, 白明|
+|10|![](png/gray.png)|灰色|gray, black_b, 灰, 黒明|
+|11|![](png/red_b.png)|明るい赤|red_b, 赤明|
+|12|![](png/yellow_b.png)|明るい黄色|yellow_b, 黄明|
+|13|![](png/green_b.png)|明るい緑|green_b, 緑明|
+|14|![](png/blue_b.png)|明るい青|blue_b, 青明|
+|15|![](png/aqua_b.png)|明るい水色|aqua_b, 水明|
+|16|![](png/purple_b.png)|明るい紫|purple_b, 紫明|
+
 <br>
 設定値はアルファベット形式または漢字形式を使用できます。漢字形式は設定ファイルの文字コードがShift_JISのときのみ有効です。
 <br>

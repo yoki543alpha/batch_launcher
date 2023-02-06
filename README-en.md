@@ -68,24 +68,25 @@ You can change the launcher settings at "settings.txt".
 ## Color settings
 batch-launcher has the following 16 colors available.
 
-<table>
-<tr><th>No.</th><th width=50>Color</th><th>Color Name</th><th>Set Values</th></tr>
-<tr><td>1</td><td bgcolor=#cccccc></td><td>White</td><td>white, 白</td></tr>
-<tr><td>2</td><td bgcolor=#0c0c0c></td><td>Black</td><td>black, 黒</td></tr>
-<tr><td>3</td><td bgcolor=#c50f1f></td><td>Red</td><td>red, 赤</td></tr>
-<tr><td>4</td><td bgcolor=#c19c00></td><td>Yellow</td><td>yellow, 黄</td></tr>
-<tr><td>5</td><td bgcolor=#13a10e></td><td>Green</td><td>green, 緑</td></tr>
-<tr><td>6</td><td bgcolor=#0037da></td><td>Blue</td><td>blue, 青</td></tr>
-<tr><td>7</td><td bgcolor=#3a96dd></td><td>Aqua</td><td>aqua, 水</td></tr>
-<tr><td>8</td><td bgcolor=#881798></td><td>Purple</td><td>purple, 紫</td></tr>
-<tr><td>9</td><td bgcolor=#f2f2f2></td><td>Bright White</td><td>white_b, 白明</td></tr>
-<tr><td>10</td><td bgcolor=#767676></td><td>Gray</td><td>gray, black_b, 灰, 黒明</td></tr>
-<tr><td>11</td><td bgcolor=#e74856></td><td>Light Red</td><td>red_b, 赤明</td></tr>
-<tr><td>12</td><td bgcolor=#f9f1a5></td><td>Light Yellow</td><td>yellow_b, 黄明</td></tr>
-<tr><td>13</td><td bgcolor=#16c60c></td><td>Light Green</td><td>green_b, 緑明</td></tr>
-<tr><td>14</td><td bgcolor=#3b78ff></td><td>Light Blue</td><td>blue_b, 青明</td></tr>
-<tr><td>15</td><td bgcolor=#61d6d6></td><td>Light Aqua</td><td>aqua_b, 水明</td></tr>
-<tr><td>16</td><td bgcolor=#b4009e></td><td>Light Purple</td><td>purple_b, 紫明</td></tr></table>
+|No.|Color|Color Name|Set Values|
+|-:|-|-|-|
+|1|![](png/white.png)|White|white, 白|
+|2|![](png/black.png)|Black|black, 黒|
+|3|![](png/red.png)|Red|red, 赤|
+|4|![](png/yellow.png)|Yellow|yellow, 黄|
+|5|![](png/green.png)|Green|green, 緑|
+|6|![](png/blue.png)|Blue|blue, 青|
+|7|![](png/aqua.png)|Aqua|aqua, 水|
+|8|![](png/purple.png)|Purple|purple, 紫|
+|9|![](png/white_b.png)|Bright White|white_b, 白明|
+|10|![](png/gray.png)|Gray|gray, black_b, 灰, 黒明|
+|11|![](png/red_b.png)|Light Red|red_b, 赤明|
+|12|![](png/yellow_b.png)|Light Yellow|yellow_b, 黄明|
+|13|![](png/green_b.png)|Light Green|green_b, 緑明|
+|14|![](png/blue_b.png)|Light Blue|blue_b, 青明|
+|15|![](png/aqua_b.png)|Light Aqua|aqua_b, 水明|
+|16|![](png/purple_b.png)|Light Purple|purple_b, 紫明|
+
 <br>
 Set values can be in alphabetic or Kanji format. The Kanji format is valid only when the character code of the setting file is Shift_JIS.
 <br>
