@@ -3,6 +3,9 @@
 title batch-launcher
 setlocal enabledelayedexpansion
 set csv_file=%~dp0\key_list.csv
+set settings_file=%~dp0\settings.txt
+set launcher_txt=%TEMP%\batch-launcher.txt
+set wsize_txt=%TEMP%\wsize.txt
 
 for /f "tokens=1,2 delims=:" %%a in ('chcp') do set chcp_num=%%b
 
@@ -22,40 +25,60 @@ if %chcp_num% equ 932 (
     set "delim_cha=|"
 )
 
-for /f "usebackq tokens=1,2 delims==" %%a in ("%~dp0\settings.txt") do set %%a=%%b
+for /f "usebackq tokens=1,2 delims==" %%a in (%settings_file%) do set %%a=%%b
 
-set count=1
+set count=0
 for /f "skip=1" %%a in (%csv_file%) do set /a count=count+1
-set /a total=count-1
+set /a total=count
+
+set TIME_REDUCTION=NO
+if exist %launcher_txt% (
+    call:get_file_timestamp %launcher_txt% stamp_launcher
+    call:get_file_timestamp %csv_file% stamp_csv
+    if "!stamp_launcher!" gtr "!stamp_csv!" (
+        call:get_file_timestamp %settings_file% stamp_settings
+        if "!stamp_launcher!" gtr "!stamp_settings!" set TIME_REDUCTION=YES
+    )
+)
 
 if %total% lss %COLUMN_NUM% set COLUMN_NUM=%total%
 
-set /a line_num=%total%/%COLUMN_NUM%+1
-set /a line_num_r=%total%%%COLUMN_NUM%
-if %line_num_r% equ 0 set /a line_num-=1
+set /a line_num=%total%/%COLUMN_NUM%
+set /a mod=%total%%%COLUMN_NUM%
+if %mod% neq 0 set /a line_num+=1
 
 set count=1
-set max_len=0
-set p_max=0
-if "%ARRANGE_VERTICAL%" == "YES" (
+set contents_len_max=0
+set item_total=0
+if "%TIME_REDUCTION%" == "YES" (
+    for /f "skip=1 tokens=1,2,3* delims=," %%a in (%csv_file%) do (
+        set keys[!count!]=%%a
+        set commands[!count!]=%%b
+        set /a count=count+1
+    )
+    set /a item_total=!count!-1
+
+    for /f "usebackq tokens=1,2 delims==" %%a in (%wsize_txt%) do set %%a=%%b
+
+    goto DISPLAY_START
+) else if "%ARRANGE_VERTICAL%" == "YES" (
     for /f "skip=1 tokens=1,2,3* delims=," %%a in (%csv_file%) do (
         set content=%%c
         if "!content!" == "" set content=%%b
 
-        set /a x=!count!/!line_num!+1
+        set /a x=!count!/!line_num!
         set /a x0=!count!%%!line_num!
-        if !x0! equ 0 set /a x-=1
+        if !x0! neq 0 set /a x+=1
 
         set /a y=!count!%%!line_num!
         if !y! equ 0 set /a y=!line_num!
 
         set /a p=!column_num!*!y!-!column_num!+!x!
-        if !p_max! lss !p! set p_max=!p!
 
         call:get_strlen !content!
         set strlen=!ERRORLEVEL!
-        set len[!p!]=!strlen!
-        if !strlen! gtr !max_len! set max_len=!strlen!
+        set column_len[!p!]=!strlen!
+        if !strlen! gtr !contents_len_max! set contents_len_max=!strlen!
 
         set keys[!p!]=%%a
         set contents[!p!]=!content!
@@ -72,8 +95,8 @@ if "%ARRANGE_VERTICAL%" == "YES" (
 
         call:get_strlen !content!
         set strlen=!ERRORLEVEL!
-        set len[!count!]=!strlen!
-        if !strlen! gtr !max_len! set max_len=!strlen!
+        set column_len[!count!]=!strlen!
+        if !strlen! gtr !contents_len_max! set contents_len_max=!strlen!
 
         set keys[!count!]=%%a
         set contents[!count!]=!content!
@@ -83,22 +106,28 @@ if "%ARRANGE_VERTICAL%" == "YES" (
 
         set /a count=count+1
     )
-
-    set /a p_max=!count!-1
 )
 
-call:calc_column_maxlen
+set /a item_total=!count!-1
 
-set last_column_num=%COLUMN_NUM%
+for /L %%i in (1,1,%COLUMN_NUM%) do set /a column_len_max[%%i]=0
+
+for /L %%i in (1,1,!item_total!) do (
+    set /a r=%%i%%%COLUMN_NUM%
+    if !r! equ 0 set r=%COLUMN_NUM%
+    if defined column_len[%%i] call:update_column_maxlen !r! !column_len[%%i]!
+)
+
+set column_total=%COLUMN_NUM%
 for /L %%i in (%COLUMN_NUM%,-1,1) do (
-    if !len_max[%%i]! equ 0 set /a last_column_num=%%i-1
+    if !column_len_max[%%i]! equ 0 set /a column_total=%%i-1
 )
 
 if "%EQUALIZE_CELL_WIDTH%" == "YES" (
-    for /L %%i in (1,1,%last_column_num%) do set /a len_max[%%i]=!max_len!
+    for /L %%i in (1,1,%column_total%) do set /a column_len_max[%%i]=!contents_len_max!
 )
 
-for /L %%i in (1,1,!p_max!) do (
+for /L %%i in (1,1,!item_total!) do (
     if defined contents[%%i] (
         set /a r=%%i%%%COLUMN_NUM%
         if !r! equ 0 set r=%COLUMN_NUM%
@@ -112,15 +141,9 @@ for /L %%i in (1,1,!p_max!) do (
 
 call:create_console_color "%BACKGROUND_COLOR%" "%TEXT_COLOR%" COLOR
 
-if not "%COLOR%" == "" (
-    color %COLOR%
-    set bg_color=%COLOR:~0,1%
-    set fg_color=%COLOR:~1,1%
-) else (
-    color 07
-    set bg_color=0
-    set fg_color=7
-)
+color %COLOR%
+set bg_color=%COLOR:~0,1%
+set fg_color=%COLOR:~1,1%
 
 call:get_echo_color %bg_color% echo_bg_color
 if "%echo_bg_color%" == "" set echo_bg_color=30
@@ -128,12 +151,12 @@ if "%echo_bg_color%" == "" set echo_bg_color=30
 call:get_echo_color %fg_color% echo_fg_color
 if "%echo_fg_color%" == "" set echo_fg_color=37
 
-set add_len=0
-if "%DISPLAY_NUMBER%" == "YES" set add_len=4
+set correct_len=0
+if "%DISPLAY_NUMBER%" == "YES" set correct_len=4
 
 set ruled_line_len=0
-for /L %%i in (1,1,%last_column_num%) do (
-    set /a ruled_line_len=ruled_line_len+!len_max[%%i]!+13+%add_len%
+for /L %%i in (1,1,%column_total%) do (
+    set /a ruled_line_len=ruled_line_len+!column_len_max[%%i]!+13+%correct_len%
 )
 
 set /a width=%ruled_line_len%+3
@@ -141,10 +164,11 @@ set /a height=!line_num!+7
 set auto_window_size=%width%,%height%
 
 if not "%WINDOW_SIZE%" == "" (
-    mode %WINDOW_SIZE%
+    set WSIZE=%WINDOW_SIZE%
 ) else (
-    mode %auto_window_size%
+    set WSIZE=%auto_window_size%
 )
+echo WSIZE=%WSIZE% > %wsize_txt%
 
 set ruled_line=%line_cha%
 for /L %%i in (1,1,%ruled_line_len%) do (
@@ -160,16 +184,16 @@ if "%DISPLAY_NUMBER%" == "YES" (
 call:get_strlen %table_header_base%
 set table_header_base_len=!ERRORLEVEL!
 
-for /L %%i in (1,1,%last_column_num%) do (
+for /L %%i in (1,1,%column_total%) do (
     set heads[%%i]=%table_header_base%
 )
 
-for /L %%i in (1,1,%last_column_num%) do (
+for /L %%i in (1,1,%column_total%) do (
     call::add_space_header %%i "%table_header%"
 )
 
 set table_header=
-for /L %%i in (1,1,%last_column_num%) do (
+for /L %%i in (1,1,%column_total%) do (
     if %%i equ 1 (
         set "table_header= !heads[%%i]!"
     ) else (
@@ -182,7 +206,7 @@ if "%EXIT_KEY%" == "" set EXIT_KEY=q
 for /f %%e in ('cmd /k prompt $e^<nul') do set ESC=%%e
 
 set numL=1
-for /L %%i in (1,1,!p_max!) do (
+for /L %%i in (1,1,!item_total!) do (
     set /a r=%%i%%%COLUMN_NUM%
     if !r! equ 0 set r=%COLUMN_NUM%
 
@@ -191,48 +215,53 @@ for /L %%i in (1,1,!p_max!) do (
 
         set flag=FALSE
         if !r! equ %COLUMN_NUM% set flag=TRUE
-        if %%i equ !p_max! set flag=TRUE
+        if %%i equ !item_total! set flag=TRUE
         if !flag! == TRUE set /a numL=numL+1
     ) else if !r! equ %COLUMN_NUM% (
         set /a numL=numL+1
     )
 )
 
-:LOOP_START
-cls
-echo %table_header%
-echo %ruled_line%
+echo %table_header% > %launcher_txt%
+echo %ruled_line% >> %launcher_txt%
 
 for /L %%i in (1,1,%line_num%) do (
-    echo !line[%%i]!
+    echo !line[%%i]! >> %launcher_txt%
 )
 
-echo %ruled_line%
+echo %ruled_line% >> %launcher_txt%
 
 if "%DISPLAY_NUMBER%" == "YES" (
     set /a last_count=total+1
     set num=  !last_count!
     set num=!num:~-3,3!
-    echo !num!  %EXIT_KEY%         %exit_message%
+    echo !num!  %EXIT_KEY%         %exit_message% >> %launcher_txt%
 ) else (
-    echo  %EXIT_KEY%         %exit_message%
+    echo  %EXIT_KEY%         %exit_message% >> %launcher_txt%
 )
 
-echo.
+echo. >> %launcher_txt%
+
+:DISPLAY_START
+mode %WSIZE%
+
+:LOOP_START
+cls
+type %launcher_txt%
 
 set key=""
 set /p key="%key_input_message%==> "
 
-if "%key%" == "%EXIT_KEY%" goto END
+if "%key%" == "%EXIT_KEY%" goto LOOP_END
 
-for /L %%i in (1,1,!p_max!) do (
+for /L %%i in (1,1,!item_total!) do (
      if defined keys[%%i] if !keys[%%i]!==%key% (
           start "" !commands[%%i]!
      )
 )
 
 if "%LOOP%" == "YES" goto LOOP_START
-:END
+:LOOP_END
 
 exit /b
 
@@ -263,28 +292,18 @@ exit /b %STRLENGTH%
     endlocal && set %2=%echo_color%
 exit /b
 
-:calc_column_maxlen
-    for /L %%i in (1,1,%COLUMN_NUM%) do set /a len_max[%%i]=0
-
-    for /L %%i in (1,1,!p_max!) do (
-        set /a r=%%i%%%COLUMN_NUM%
-        if !r! equ 0 set r=%COLUMN_NUM%
-        if defined len[%%i] call:update_maxlen !r! !len[%%i]!
-    )
-exit /b
-
-:update_maxlen
+:update_column_maxlen
     set num=%1
     set len=%2
 
-    if %len% gtr !len_max[%num%]! set /a len_max[%num%]=%len%
+    if %len% gtr !column_len_max[%num%]! set /a column_len_max[%num%]=%len%
 exit /b
 
 :get_maxlen
     set num=%1
 
     for /L %%k in (1,1,%COLUMN_NUM%) do (
-        if %%k equ %num% exit /b !len_max[%%k]!
+        if %%k equ %num% exit /b !column_len_max[%%k]!
     )
 exit /b 0
 
@@ -293,7 +312,7 @@ exit /b 0
     set maxlen=%2
 
     set content=!contents[%num%]!
-    set /a sp_len=%maxlen%-!len[%num%]!
+    set /a sp_len=%maxlen%-!column_len[%num%]!
 
     if !sp_len! leq 0 exit /b
 
@@ -307,7 +326,7 @@ exit /b
 :add_space_header
     set num=%1
 
-    set /a sp_len=!len_max[%num%]!-%table_header_base_len%+11+%add_len%
+    set /a sp_len=!column_len_max[%num%]!-%table_header_base_len%+11+%correct_len%
 
     set head1=!heads[%num%]!
     for /L %%i in (1,1,!sp_len!) do (
@@ -441,4 +460,22 @@ exit /b
     if not "%bg_color%" == "X" if not "%fg_color%" == "X" set console_color=%bg_color%%fg_color%
 
     endlocal && set %3=%console_color%
+exit /b
+
+:get_file_timestamp
+    setlocal
+    set "filepath=%~1"
+
+    for %%f in (%filepath%) do (
+        set dirname=%%~dpf
+        set filename=%%~nxf
+    )
+
+    cd %dirname%
+    for /F "tokens=2,3" %%A in ('where /T %%filename%%') do (
+        set STAMP=%%A_%%B
+        echo %STAMP% | findstr _[0-9]: > nul && set STAMP=%STAMP:_=_0%
+    )
+
+    endlocal && set %2=%STAMP%
 exit /b
