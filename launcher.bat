@@ -6,6 +6,7 @@ set csv_file=%~dp0\key_list.csv
 set settings_file=%~dp0\settings.txt
 set launcher_txt=%TEMP%\batch-launcher.txt
 set winset_txt=%TEMP%\winset.txt
+set hash_txt=%TEMP%\launcher_hash.txt
 
 for /f "tokens=1,2 delims=:" %%a in ('chcp') do set chcp_num=%%b
 
@@ -32,13 +33,13 @@ for /f "skip=1" %%a in (%csv_file%) do set /a count=count+1
 set /a total=count
 
 set TIME_REDUCTION=NO
-if exist %launcher_txt% (
-    call:get_file_timestamp %launcher_txt% stamp_launcher
-    call:get_file_timestamp %csv_file% stamp_csv
-    if "!stamp_launcher!" gtr "!stamp_csv!" (
-        call:get_file_timestamp %settings_file% stamp_settings
-        if "!stamp_launcher!" gtr "!stamp_settings!" set TIME_REDUCTION=YES
-    )
+call:get_md5hash %csv_file% hash_csv_new
+call:get_md5hash %settings_file% hash_settings_new
+
+if exist %launcher_txt% if exist %winset_txt% if exist %hash_txt% (
+    for /f "usebackq tokens=1,2 delims==" %%a in (%hash_txt%) do set %%a=%%b
+
+    if !HASH_CSV! == %hash_csv_new% if !SETTINGS_CSV! == %hash_settings_new% set TIME_REDUCTION=YES
 )
 
 if %total% lss %COLUMN_NUM% set COLUMN_NUM=%total%
@@ -50,6 +51,7 @@ if %mod% neq 0 set /a line_num+=1
 set count=1
 set contents_len_max=0
 set item_total=0
+
 if "%TIME_REDUCTION%" == "YES" (
     for /f "skip=1 tokens=1,2,3* delims=," %%a in (%csv_file%) do (
         set keys[!count!]=%%a
@@ -111,6 +113,9 @@ if "%TIME_REDUCTION%" == "YES" (
     set /a item_total=!count!-1
 )
 
+echo HASH_CSV=%hash_csv_new%> %hash_txt%
+echo SETTINGS_CSV=%hash_settings_new%>> %hash_txt%
+
 for /L %%i in (1,1,%COLUMN_NUM%) do set /a column_len_max[%%i]=0
 
 for /L %%i in (1,1,!item_total!) do (
@@ -141,7 +146,7 @@ for /L %%i in (1,1,!item_total!) do (
 )
 
 call:create_console_color "%BACKGROUND_COLOR%" "%TEXT_COLOR%" CONSOLE_COLOR
-echo CONSOLE_COLOR=%CONSOLE_COLOR% > %winset_txt%
+echo CONSOLE_COLOR=%CONSOLE_COLOR%> %winset_txt%
 
 set bg_color=%CONSOLE_COLOR:~0,1%
 set fg_color=%CONSOLE_COLOR:~1,1%
@@ -169,7 +174,7 @@ if not "%WINDOW_SIZE%" == "" (
 ) else (
     set WSIZE=%auto_window_size%
 )
-echo WSIZE=%WSIZE% >> %winset_txt%
+echo WSIZE=%WSIZE%>> %winset_txt%
 
 set ruled_line=%line_cha%
 for /L %%i in (1,1,%ruled_line_len%) do (
@@ -223,25 +228,25 @@ for /L %%i in (1,1,!item_total!) do (
     )
 )
 
-echo %table_header% > %launcher_txt%
-echo %ruled_line% >> %launcher_txt%
+echo %table_header%> %launcher_txt%
+echo %ruled_line%>> %launcher_txt%
 
 for /L %%i in (1,1,%line_num%) do (
-    echo !line[%%i]! >> %launcher_txt%
+    echo !line[%%i]!>> %launcher_txt%
 )
 
-echo %ruled_line% >> %launcher_txt%
+echo %ruled_line%>> %launcher_txt%
 
 if "%DISPLAY_NUMBER%" == "YES" (
     set /a last_count=total+1
     set num=  !last_count!
     set num=!num:~-3,3!
-    echo !num!  %EXIT_KEY%         %exit_message% >> %launcher_txt%
+    echo !num!  %EXIT_KEY%         %exit_message%>> %launcher_txt%
 ) else (
-    echo  %EXIT_KEY%         %exit_message% >> %launcher_txt%
+    echo  %EXIT_KEY%         %exit_message%>> %launcher_txt%
 )
 
-echo. >> %launcher_txt%
+echo.>> %launcher_txt%
 
 :DISPLAY_START
 color %CONSOLE_COLOR%
@@ -464,20 +469,11 @@ exit /b
     endlocal && set %3=%console_color%
 exit /b
 
-:get_file_timestamp
+:get_md5hash
     setlocal
     set "filepath=%~1"
 
-    for %%f in (%filepath%) do (
-        set dirname=%%~dpf
-        set filename=%%~nxf
-    )
+    for /f %%a in ('certutil -hashfile %filepath% MD5 ^| findstr /r "^[0-9a-z]*$"') do set rtn=%%a
 
-    cd %dirname%
-    for /F "tokens=2,3" %%A in ('where /T %%filename%%') do (
-        set STAMP=%%A_%%B
-        echo %STAMP% | findstr _[0-9]: > nul && set STAMP=%STAMP:_=_0%
-    )
-
-    endlocal && set %2=%STAMP%
+    endlocal && set %2=%rtn%
 exit /b
