@@ -7,5 +7,5 @@ d,shell:Desktop,Desktop Folder,green_b
 e,"C:\Program Files"
 r,regedit,Registry Editor
 s,services.msc,Services,aqua
-key,notepad.exe key_list.csv,Key config
-conf,notepad.exe config.txt,Launcher config
+key,notepad.exe key_list.csv,Key settings
+set,notepad.exe settings.txt,Launcher settings

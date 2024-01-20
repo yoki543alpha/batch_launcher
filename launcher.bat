@@ -5,7 +5,7 @@ setlocal enabledelayedexpansion
 set csv_file=%~dp0\key_list.csv
 set settings_file=%~dp0\settings.txt
 set launcher_txt=%TEMP%\batch-launcher.txt
-set wsize_txt=%TEMP%\wsize.txt
+set winset_txt=%TEMP%\winset.txt
 
 for /f "tokens=1,2 delims=:" %%a in ('chcp') do set chcp_num=%%b
 
@@ -58,7 +58,7 @@ if "%TIME_REDUCTION%" == "YES" (
     )
     set /a item_total=!count!-1
 
-    for /f "usebackq tokens=1,2 delims==" %%a in (%wsize_txt%) do set %%a=%%b
+    for /f "usebackq tokens=1,2 delims==" %%a in (%winset_txt%) do set %%a=%%b
 
     goto DISPLAY_START
 ) else if "%ARRANGE_VERTICAL%" == "YES" (
@@ -74,6 +74,7 @@ if "%TIME_REDUCTION%" == "YES" (
         if !y! equ 0 set /a y=!line_num!
 
         set /a p=!column_num!*!y!-!column_num!+!x!
+        if !item_total! lss !p! set item_total=!p!
 
         call:get_strlen !content!
         set strlen=!ERRORLEVEL!
@@ -106,9 +107,9 @@ if "%TIME_REDUCTION%" == "YES" (
 
         set /a count=count+1
     )
-)
 
-set /a item_total=!count!-1
+    set /a item_total=!count!-1
+)
 
 for /L %%i in (1,1,%COLUMN_NUM%) do set /a column_len_max[%%i]=0
 
@@ -139,11 +140,11 @@ for /L %%i in (1,1,!item_total!) do (
     )
 )
 
-call:create_console_color "%BACKGROUND_COLOR%" "%TEXT_COLOR%" COLOR
+call:create_console_color "%BACKGROUND_COLOR%" "%TEXT_COLOR%" CONSOLE_COLOR
+echo CONSOLE_COLOR=%CONSOLE_COLOR% > %winset_txt%
 
-color %COLOR%
-set bg_color=%COLOR:~0,1%
-set fg_color=%COLOR:~1,1%
+set bg_color=%CONSOLE_COLOR:~0,1%
+set fg_color=%CONSOLE_COLOR:~1,1%
 
 call:get_echo_color %bg_color% echo_bg_color
 if "%echo_bg_color%" == "" set echo_bg_color=30
@@ -168,7 +169,7 @@ if not "%WINDOW_SIZE%" == "" (
 ) else (
     set WSIZE=%auto_window_size%
 )
-echo WSIZE=%WSIZE% > %wsize_txt%
+echo WSIZE=%WSIZE% >> %winset_txt%
 
 set ruled_line=%line_cha%
 for /L %%i in (1,1,%ruled_line_len%) do (
@@ -243,6 +244,7 @@ if "%DISPLAY_NUMBER%" == "YES" (
 echo. >> %launcher_txt%
 
 :DISPLAY_START
+color %CONSOLE_COLOR%
 mode %WSIZE%
 
 :LOOP_START

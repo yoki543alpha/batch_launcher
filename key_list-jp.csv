@@ -8,4 +8,4 @@ e,"C:\Program Files"
 r,regedit,レジストリエディタ
 s,services.msc,サービス,aqua
 key,notepad.exe key_list.csv,キー設定
-conf,notepad.exe config.txt,ランチャー設定
+set,notepad.exe settings.txt,ランチャー設定
